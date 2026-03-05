@@ -10,11 +10,32 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-	- name: Checkout SOURCE repo
-	uses: actions/checkout@v4
+      - name: Checkout SOURCE repo
+        uses: actions/checkout@v4
         with:
           repository: mntendo/docker-compose-react-nodejs-mysql
           path: source
+
+      - name: Build and start app with Docker Compose
+        run: |
+          cd source
+          docker compose up -d --build
+
+      - name: Wait a few seconds
+        run: sleep 15
+
+      - name: Verify UI is reachable
+        run: curl -I --fail http://localhost:8888
+
+      - name: Verify API is reachable
+        run: curl -I --fail http://localhost:6868
+
+      - name: Print container status (debug)
+        if: always()
+        run: |
+          cd source
+          docker ps
+          docker compose logs --no-color --tail=100
 
       - name: Print test message
         run: echo "Nightly build workflow is running as scheduled"
