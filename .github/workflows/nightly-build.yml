@@ -1,0 +1,17 @@
+name: Nightly Build
+
+on:
+  schedule:
+    - cron: "0 8 * * *"
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Print test message
+        run: echo "Nightly build workflow is running as scheduled"
